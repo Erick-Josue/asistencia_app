@@ -66,8 +66,11 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           if (state is AuthSedeAutenticado) {
             return QRScreen(
+              idCuentaSede: state.usuarioId,
               sedeId: state.idSede,
               nombreSede: state.nombreSede,
+              direccionSede: state.direccionSede,
+              correoSede: state.correo,
             );
           }
 

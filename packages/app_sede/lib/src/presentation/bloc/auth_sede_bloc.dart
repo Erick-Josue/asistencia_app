@@ -46,8 +46,9 @@ class AuthSedeBloc extends Bloc<AuthSedeEvent, AuthSedeState> {
       emit(
         AuthSedeAutenticado(
           usuarioId: usuarioId,
-          correo: event.correo,
+          correo: sede.correo.isEmpty ? event.correo : sede.correo,
           nombreSede: sede.nombre,
+          direccionSede: sede.direccion,
           idSede: sede.idSede,
         ),
       );
@@ -83,6 +84,7 @@ class AuthSedeBloc extends Bloc<AuthSedeEvent, AuthSedeState> {
         id: usuarioId,
         nombre: event.nombreSede,
         direccion: event.direccion,
+        correo: event.correo,
         idSede: event.idSede,
         creadaEn: DateTime.now(),
         usuarioId: usuarioId,
@@ -95,6 +97,7 @@ class AuthSedeBloc extends Bloc<AuthSedeEvent, AuthSedeState> {
           usuarioId: usuarioId,
           correo: event.correo,
           nombreSede: event.nombreSede,
+          direccionSede: event.direccion,
           idSede: event.idSede,
         ),
       );
@@ -122,8 +125,9 @@ class AuthSedeBloc extends Bloc<AuthSedeEvent, AuthSedeState> {
           emit(
             AuthSedeAutenticado(
               usuarioId: usuarioId,
-              correo: correo,
+              correo: sede.correo.isEmpty ? correo : sede.correo,
               nombreSede: sede.nombre,
+              direccionSede: sede.direccion,
               idSede: sede.idSede,
             ),
           );

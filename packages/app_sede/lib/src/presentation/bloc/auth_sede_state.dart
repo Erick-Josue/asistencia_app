@@ -19,12 +19,14 @@ class AuthSedeAutenticado extends AuthSedeState {
   final String usuarioId;
   final String correo;
   final String nombreSede;
+  final String direccionSede;
   final String idSede;
 
   const AuthSedeAutenticado({
     required this.usuarioId,
     required this.correo,
     required this.nombreSede,
+    required this.direccionSede,
     required this.idSede,
   });
 }

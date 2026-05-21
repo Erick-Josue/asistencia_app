@@ -9,13 +9,19 @@ import '../../src/presentation/bloc/auth_sede_bloc.dart';
 import '../../src/presentation/bloc/auth_sede_event.dart';
 
 class QRScreen extends StatefulWidget {
+  final String idCuentaSede;
   final String sedeId;
   final String nombreSede;
+  final String direccionSede;
+  final String correoSede;
 
   const QRScreen({
     super.key,
+    required this.idCuentaSede,
     required this.sedeId,
     required this.nombreSede,
+    required this.direccionSede,
+    required this.correoSede,
   });
 
   @override
@@ -50,9 +56,12 @@ class _QRScreenState extends State<QRScreen> {
 
   void _generarQR() {
     final payload = {
+      'idCuentaSede': widget.idCuentaSede,
       'sedeId': widget.sedeId,
       'idSede': widget.sedeId,
       'nombreSede': widget.nombreSede,
+      'direccionSede': widget.direccionSede,
+      'correoSede': widget.correoSede,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
 
@@ -90,6 +99,8 @@ class _QRScreenState extends State<QRScreen> {
               ),
               const SizedBox(height: 8),
               Text('ID: ${widget.sedeId}'),
+              const SizedBox(height: 4),
+              Text(widget.direccionSede),
               const SizedBox(height: 28),
               DecoratedBox(
                 decoration: BoxDecoration(
