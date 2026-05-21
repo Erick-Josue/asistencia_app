@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371173634961",
+    "project_id": "appasistencia-94d2b",
+    "storage_bucket": "appasistencia-94d2b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371173634961:android:0aa9f9c6965c1b560c6030",
+        "android_client_info": {
+          "package_name": "com.example.app_sede"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTVHMswEuebpy-Dtsa3r7HoxHB7726VdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

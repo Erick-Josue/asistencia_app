@@ -1,0 +1,41 @@
+name: asistencia_monorepo
+repository: https://github.com/tu-repo/asistencia_monorepo
+
+packages:
+  - packages/**
+
+scripts:
+  bootstrap:
+    description: "Instalar dependencias en todos los paquetes"
+    run: melos bootstrap
+  
+  clean:
+    description: "Limpiar todos los paquetes"
+    run: melos clean
+  
+  analyze:
+    description: "Análisis de código en todos los paquetes"
+    run: |
+      melos exec -- "flutter analyze"
+  
+  test:
+    description: "Ejecutar tests"
+    run: |
+      melos exec -- "flutter test"
+  
+  app_sede:
+    description: "Ejecutar app sede"
+    run: |
+      melos exec --scope="app_sede" -- flutter run
+  
+  app_trabajador:
+    description: "Ejecutar app trabajador"
+    run: |
+      melos exec --scope="app_trabajador" -- flutter run
+  
+  format:
+    description: "Formatear código"
+    run: |
+      melos exec -- "dart format lib test"
+
+sdkPath: "C:\\tools\\flutter"

@@ -1,0 +1,129 @@
+// Archivo: firestore.rules
+// Copiar todo el contenido en Firebase Console > Firestore > Reglas
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ====================== CUENTAS ======================
+    match /cuentas/{cuentaId} {
+      allow read: if request.auth != null && request.auth.uid == cuentaId;
+      allow create: if request.auth != null
+                    && request.auth.uid == cuentaId
+                    && validarCuentaData(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ====================== TIENDAS ======================
+    match /tiendas/{tiendaId} {
+      allow read: if request.auth.uid == tiendaId;
+      allow create, update: if request.auth.uid == tiendaId 
+                   && validarTiendaData(request.resource.data);
+      allow delete: if false;
+    }
+    
+    // ====================== TRABAJADORES ======================
+    match /trabajadores/{trabajadorId} {
+      allow read: if request.auth.uid == trabajadorId;
+      
+      allow create: if request.auth.uid == trabajadorId 
+                    && validarTrabajadorData(request.resource.data);
+      
+      allow update: if request.auth.uid == trabajadorId 
+                    && validarActualizacionTrabajador(request.resource.data, 
+                                                       resource.data);
+      
+      allow delete: if false;
+    }
+    
+    // ====================== ASISTENCIAS ======================
+    match /asistencias/{asistenciaId} {
+      // Trabajador lee su propia asistencia o sede lee asistencias de su sede.
+      allow read: if request.auth != null
+                  && (
+                    request.auth.uid == resource.data.idTrabajador
+                    || (existeTienda(request.auth.uid)
+                        && esTiendaDel(request.auth.uid, resource.data))
+                  );
+
+      // Trabajador crea y actualiza solo su documento diario.
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.idTrabajador
+                    && validarAsistenciaData(request.resource.data);
+
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.idTrabajador
+                    && request.auth.uid == request.resource.data.idTrabajador
+                    && validarAsistenciaData(request.resource.data);
+      
+      allow delete: if false;
+    }
+    
+    // ====================== FUNCIONES DE VALIDACIÓN ======================
+    
+    function validarCuentaData(data) {
+      return data.uid is string
+        && data.uid == request.auth.uid
+        && data.correo is string
+        && data.correo.size() > 0
+        && data.tipo in ['tienda', 'trabajador']
+        && data.creadaEn is timestamp;
+    }
+
+    function validarTiendaData(data) {
+      return data.nombre is string
+        && data.nombre.size() > 0
+        && data.direccion is string
+        && data.direccion.size() > 0
+        && data.idSede is string
+        && data.idSede.size() > 0
+        && data.creadaEn is timestamp
+        && data.usuarioId is string;
+    }
+    
+    function validarTrabajadorData(data) {
+      return data.nombreCompleto is string
+        && data.nombreCompleto.size() > 0
+        && data.dni is string
+        && data.dni.matches('^[0-9]{8}$')
+        && data.cargo is string
+        && data.cargo.size() > 0
+        && data.correo is string
+        && data.correo.size() > 0
+        && data.idSede is string
+        && data.idSede.size() > 0
+        && data.creadoEn is timestamp
+        && data.activo is bool;
+    }
+    
+    function validarActualizacionTrabajador(newData, oldData) {
+      return newData.nombreCompleto == oldData.nombreCompleto
+        && newData.dni == oldData.dni
+        && newData.idSede == oldData.idSede
+        && newData.creadoEn == oldData.creadoEn;
+    }
+    
+    function validarAsistenciaData(data) {
+      return data.idTrabajador is string
+        && data.idTrabajador.size() > 0
+        && data.dni is string
+        && data.nombreTrabajador is string
+        && data.idSede is string
+        && data.nombreSede is string
+        && data.fecha is timestamp
+        && (data.horaInicio == null || data.horaInicio is timestamp)
+        && (data.horaReceso == null || data.horaReceso is timestamp)
+        && (data.horaFinReceso == null || data.horaFinReceso is timestamp)
+        && (data.horaSalida == null || data.horaSalida is timestamp);
+    }
+    
+    function existeTienda(uid) {
+      return exists(/databases/$(database)/documents/tiendas/$(uid));
+    }
+    
+    function esTiendaDel(uid, data) {
+      return get(/databases/$(database)/documents/tiendas/$(uid)).data.idSede == data.idSede;
+    }
+  }
+}
